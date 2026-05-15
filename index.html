@@ -1,1001 +1,1000 @@
-     1|<!DOCTYPE html>
-     2|<html lang="en">
-     3|<head>
-     4|  <meta charset="UTF-8" />
-     5|  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-     6|  <title>IB Study Checklist</title>
-     7|  <link rel="preconnect" href="https://fonts.googleapis.com">
-     8|  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-     9|  <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
-    10|  <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
-    11|  <style>
-    12|    /* Art direction: exam war room → focused, intense, purposeful
-    13|       Palette: near-black surfaces, warm cream text, sharp teal accent
-    14|       Typography: 'Geist Mono' (headings/labels) + 'Inter' (body) — clarity + slight technical edge
-    15|       Density: dense — this is a tool, not a landing page */
-    16|
-    17|    /* ===== BASE RESET ===== */
-    18|    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-    19|    html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
-    20|    body { font-family: 'Inter', system-ui, -apple-system, sans-serif; line-height: 1.5; color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
-    21|    a { text-decoration: none; color: inherit; }
-    22|    button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
-    23|    ul { list-style: none; }
-    24|    input, label { font-family: inherit; }
-    25|    img { max-width: 100%; display: block; }
-    26|    ::-webkit-scrollbar { width: 8px; }
-    27|    ::-webkit-scrollbar-track { background: transparent; }
-    28|    ::-webkit-scrollbar-thumb { background: var(--color-surface-offset); border-radius: 4px; }
-    29|
-    30|    /* ===== TOKENS ===== */
-    31|    :root {
-    32|      /* Radius */
-    33|      --radius-none: 0;
-    34|      --radius-sm: 4px;
-    35|      --radius-base: 6px;
-    36|      --radius-md: 8px;
-    37|      --radius-lg: 12px;
-    38|      --radius-xl: 16px;
-    39|      --radius-2xl: 24px;
-    40|      --radius-full: 9999px;
-    41|
-    42|      /* Space */
-    43|      --space-0: 0;
-    44|      --space-1: 4px;
-    45|      --space-2: 8px;
-    46|      --space-3: 12px;
-    47|      --space-4: 16px;
-    48|      --space-5: 20px;
-    49|      --space-6: 24px;
-    50|      --space-8: 32px;
-    51|      --space-10: 40px;
-    52|      --space-12: 48px;
-    53|      --space-16: 64px;
-    54|      --space-20: 80px;
-    55|      --space-24: 96px;
-    56|
-    57|      /* Text */
-    58|      --text-xs: 0.75rem;
-    59|      --text-sm: 0.8125rem;
-    60|      --text-base: 0.9375rem;
-    61|      --text-md: 1rem;
-    62|      --text-lg: 1.125rem;
-    63|      --text-xl: 1.375rem;
-    64|      --text-2xl: 1.75rem;
-    65|      --text-3xl: 2.25rem;
-    66|
-    67|      /* Shadows */
-    68|      --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
-    69|      --shadow-md: 0 4px 8px rgba(0,0,0,0.25);
-    70|      --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
-    71|      --shadow-xl: 0 16px 48px rgba(0,0,0,0.35);
-    72|
-    73|      /* Transition */
-    74|      --transition-interactive: 150ms ease;
-    75|    }
-    76|
-    77|    :root, [data-theme="dark"] {
-    78|      --color-bg:              #0e0e0e;
-    79|      --color-surface:         #141414;
-    80|      --color-surface-2:       #1a1a1a;
-    81|      --color-surface-offset:  #202020;
-    82|      --color-border:          #2a2a2a;
-    83|      --color-divider:         #252525;
-    84|      --color-text:            #e8e4dc;
-    85|      --color-text-muted:      #7a7670;
-    86|      --color-text-faint:      #3e3c39;
-    87|      --color-primary:         #2dd4bf;
-    88|      --color-primary-hover:   #14b8a6;
-    89|      --color-success:         #4ade80;
-    90|      --color-warning:         #fb923c;
-    91|      --color-error:           #f87171;
-    92|
-    93|      /* Subject accents */
-    94|      --subject-math:          #2dd4bf;
-    95|      --subject-physics:       #fb923c;
-    96|      --subject-cs:            #60a5fa;
-    97|      --subject-econ:          #fbbf24;
-    98|    }
-    99|
-   100|    [data-theme="light"] {
-   101|      --color-bg:              #f5f4f0;
-   102|      --color-surface:         #fafaf8;
-   103|      --color-surface-2:       #ffffff;
-   104|      --color-surface-offset:  #eeecea;
-   105|      --color-border:          #d8d6d0;
-   106|      --color-divider:         #e0deda;
-   107|      --color-text:            #1c1b18;
-   108|      --color-text-muted:      #6b6a64;
-   109|      --color-text-faint:      #b8b6b0;
-   110|      --color-primary:         #0d9488;
-   111|      --color-primary-hover:   #0f766e;
-   112|      --color-success:         #16a34a;
-   113|      --color-warning:         #ea580c;
-   114|      --color-error:           #dc2626;
-   115|
-   116|      --subject-math:          #0d9488;
-   117|      --subject-physics:       #ea580c;
-   118|      --subject-cs:            #2563eb;
-   119|      --subject-econ:          #d97706;
-   120|    }
-   121|
-   122|    /* ===== LAYOUT ===== */
-   123|    .app { display: flex; height: 100vh; overflow: hidden; }
-   124|
-   125|    /* SIDEBAR */
-   126|    .sidebar {
-   127|      width: 220px;
-   128|      flex-shrink: 0;
-   129|      background: var(--color-surface);
-   130|      border-right: 1px solid var(--color-border);
-   131|      display: flex;
-   132|      flex-direction: column;
-   133|      padding: var(--space-4);
-   134|      gap: var(--space-4);
-   135|      z-index: 10;
-   136|    }
-   137|    .sidebar-header {
-   138|      display: flex;
-   139|      align-items: center;
-   140|      justify-content: space-between;
-   141|    }
-   142|    .sidebar-title {
-   143|      font-family: 'Geist Mono', monospace;
-   144|      font-size: var(--text-lg);
-   145|      font-weight: 600;
-   146|      color: var(--color-primary);
-   147|    }
-   148|    .theme-toggle {
-   149|      width: 32px; height: 32px;
-   150|      display: flex; align-items: center; justify-content: center;
-   151|      border-radius: var(--radius-md);
-   152|      color: var(--color-text-muted);
-   153|      transition: color var(--transition-interactive), background var(--transition-interactive);
-   154|    }
-   155|    .theme-toggle:hover { background: var(--color-surface-offset); color: var(--color-text); }
-   156|
-   157|    .nav-subjects { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; }
-   158|    .nav-link {
-   159|      display: flex;
-   160|      align-items: center;
-   161|      gap: var(--space-3);
-   162|      padding: var(--space-2) var(--space-3);
-   163|      border-radius: var(--radius-md);
-   164|      font-family: 'Geist Mono', monospace;
-   165|      font-size: var(--text-sm);
-   166|      font-weight: 500;
-   167|      color: var(--color-text-muted);
-   168|      transition: all var(--transition-interactive);
-   169|      border-left: 3px solid transparent;
-   170|    }
-   171|    .nav-link:hover { background: var(--color-surface-2); color: var(--color-text); }
-   172|    .nav-link.active { background: var(--color-surface-offset); color: var(--color-text); border-left-color: var(--color-primary); }
-   173|    .nav-dot { width: 8px; height: 8px; border-radius: var(--radius-full); }
-   174|
-   175|    .sidebar-footer {
-   176|      border-top: 1px solid var(--color-border);
-   177|      padding-top: var(--space-4);
-   178|      display: flex;
-   179|      flex-direction: column;
-   180|      gap: var(--space-2);
-   181|    }
-   182|    .progress-bar-track {
-   183|      width: 100%; height: 6px;
-   184|      background: var(--color-surface-offset);
-   185|      border-radius: var(--radius-full);
-   186|      overflow: hidden;
-   187|    }
-   188|    .progress-bar-fill {
-   189|      height: 100%; background: var(--color-primary);
-   190|      border-radius: var(--radius-full);
-   191|      transition: width 0.4s ease;
-   192|    }
-   193|    .progress-text {
-   194|      font-family: 'Geist Mono', monospace;
-   195|      font-size: var(--text-xs);
-   196|      color: var(--color-text-muted);
-   197|    }
-   198|
-   199|    /* MAIN */
-   200|    .main {
-   201|      flex: 1;
-   202|      overflow-y: auto;
-   203|      overflow-x: hidden;
-   204|      position: relative;
-   205|    }
-   206|    .main-inner {
-   207|      max-width: 960px;
-   208|      margin: 0 auto;
-   209|      padding: var(--space-6) var(--space-6) var(--space-20);
-   210|    }
-   211|
-   212|    /* STICKY HEADER */
-   213|    .sticky-bar {
-   214|      position: sticky;
-   215|      top: 0;
-   216|      z-index: 5;
-   217|      background: var(--color-bg);
-   218|      backdrop-filter: blur(12px);
-   219|      border-bottom: 1px solid var(--color-border);
-   220|      padding: var(--space-3) var(--space-6);
-   221|      display: flex;
-   222|      align-items: center;
-   223|      justify-content: space-between;
-   224|      gap: var(--space-4);
-   225|    }
-   226|    .sticky-bar-subject {
-   227|      font-family: 'Geist Mono', monospace;
-   228|      font-size: var(--text-md);
-   229|      font-weight: 600;
-   230|      color: var(--color-text);
-   231|    }
-   232|    .sticky-bar-progress {
-   233|      font-family: 'Geist Mono', monospace;
-   234|      font-size: var(--text-sm);
-   235|      color: var(--color-text-muted);
-   236|    }
-   237|
-   238|    /* FILTER CHIPS */
-   239|    .filters {
-   240|      position: sticky;
-   241|      top: 53px;
-   242|      z-index: 4;
-   243|      background: var(--color-bg);
-   244|      padding: var(--space-3) var(--space-6);
-   245|      display: flex;
-   246|      gap: var(--space-2);
-   247|      flex-wrap: wrap;
-   248|      border-bottom: 1px solid var(--color-border);
-   249|    }
-   250|    .chip {
-   251|      padding: var(--space-1) var(--space-3);
-   252|      border-radius: var(--radius-full);
-   253|      font-family: 'Geist Mono', monospace;
-   254|      font-size: var(--text-xs);
-   255|      font-weight: 500;
-   256|      border: 1px solid var(--color-border);
-   257|      color: var(--color-text-muted);
-   258|      background: var(--color-surface);
-   259|      transition: all var(--transition-interactive);
-   260|      cursor: pointer;
-   261|    }
-   262|    .chip:hover { border-color: var(--color-text-muted); color: var(--color-text); }
-   263|    .chip.active { background: var(--color-primary); color: #0e0e0e; border-color: var(--color-primary); }
-   264|    [data-theme="light"] .chip.active { color: #fff; }
-   265|
-   266|    /* RESET */
-   267|    .reset-btn {
-   268|      display: flex; align-items: center; gap: var(--space-2);
-   269|      padding: var(--space-2) var(--space-3);
-   270|      border-radius: var(--radius-md);
-   271|      background: rgba(248,113,113,0.12);
-   272|      color: var(--color-error);
-   273|      font-family: 'Geist Mono', monospace;
-   274|      font-size: var(--text-xs);
-   275|      font-weight: 500;
-   276|      transition: background var(--transition-interactive);
-   277|      white-space: nowrap;
-   278|    }
-   279|    .reset-btn:hover { background: rgba(248,113,113,0.2); }
-   280|
-   281|    /* SUBJECT SECTION */
-   282|    .subject-section {
-   283|      margin-top: var(--space-10);
-   284|      animation: fadeIn 0.4s ease both;
-   285|    }
-   286|    .subject-section:first-child { margin-top: var(--space-4); }
-   287|
-   288|    @keyframes fadeIn {
-   289|      from { opacity: 0; transform: translateY(12px); }
-   290|      to { opacity: 1; transform: translateY(0); }
-   291|    }
-   292|
-   293|    /* SUBJECT HEADER */
-   294|    .subject-header {
-   295|      display: flex;
-   296|      align-items: flex-start;
-   297|      justify-content: space-between;
-   298|      gap: var(--space-6);
-   299|      padding: var(--space-5);
-   300|      background: var(--color-surface);
-   301|      border: 1px solid var(--color-border);
-   302|      border-radius: var(--radius-lg);
-   303|      margin-bottom: var(--space-4);
-   304|    }
-   305|    .subject-info { display: flex; flex-direction: column; gap: var(--space-2); }
-   306|    .subject-name {
-   307|      font-family: 'Geist Mono', monospace;
-   308|      font-size: var(--text-xl);
-   309|      font-weight: 700;
-   310|    }
-   311|    .subject-meta {
-   312|      display: flex;
-   313|      align-items: center;
-   314|      gap: var(--space-3);
-   315|      flex-wrap: wrap;
-   316|    }
-   317|    .badge {
-   318|      font-family: 'Geist Mono', monospace;
-   319|      font-size: var(--text-xs);
-   320|      font-weight: 500;
-   321|      padding: var(--space-1) var(--space-2);
-   322|      border-radius: var(--radius-sm);
-   323|    }
-   324|    .badge-exam { background: var(--color-surface-2); color: var(--color-text-muted); border: 1px solid var(--color-border); }
-   325|    .badge-count { background: var(--color-surface-2); color: var(--color-text); border: 1px solid var(--color-border); }
-   326|    .badge-countdown {
-   327|      font-size: var(--text-xs);
-   328|      font-weight: 700;
-   329|      padding: var(--space-1) var(--space-2);
-   330|      border-radius: var(--radius-sm);
-   331|    }
-   332|    .countdown-green { background: rgba(74,222,128,0.12); color: var(--color-success); }
-   333|    .countdown-orange { background: rgba(251,146,60,0.12); color: var(--color-warning); }
-   334|    .countdown-red { background: rgba(248,113,113,0.12); color: var(--color-error); }
-   335|
-   336|    .subject-actions { display: flex; gap: var(--space-2); align-items: center; }
-   337|    .btn-sm {
-   338|      display: flex; align-items: center; gap: var(--space-2);
-   339|      padding: var(--space-2) var(--space-3);
-   340|      border-radius: var(--radius-md);
-   341|      font-family: 'Geist Mono', monospace;
-   342|      font-size: var(--text-xs);
-   343|      font-weight: 500;
-   344|      background: var(--color-surface-2);
-   345|      color: var(--color-text-muted);
-   346|      border: 1px solid var(--color-border);
-   347|      transition: all var(--transition-interactive);
-   348|      white-space: nowrap;
-   349|    }
-   350|    .btn-sm:hover { background: var(--color-surface-offset); color: var(--color-text); }
-   351|    .btn-sm svg { width: 14px; height: 14px; }
-   352|
-   353|    /* PROGRESS RING */
-   354|    .progress-ring { flex-shrink: 0; }
-   355|    .progress-ring circle { fill: none; transition: stroke-dashoffset 0.4s ease; }
-   356|    .progress-ring-track { stroke: var(--color-surface-offset); }
-   357|    .progress-ring-fill { stroke-linecap: round; }
-   358|
-   359|    /* BLOCK CARD */
-   360|    .block-card {
-   361|      background: var(--color-surface);
-   362|      border: 1px solid var(--color-border);
-   363|      border-radius: var(--radius-lg);
-   364|      margin-bottom: var(--space-3);
-   365|      overflow: hidden;
-   366|      transition: border-color var(--transition-interactive);
-   367|    }
-   368|    .block-card.block-done { border-color: rgba(74,222,128,0.3); }
-   369|    [data-theme="light"] .block-card.block-done { border-color: rgba(22,163,74,0.3); }
-   370|
-   371|    .block-header {
-   372|      display: flex;
-   373|      align-items: center;
-   374|      gap: var(--space-3);
-   375|      padding: var(--space-3) var(--space-4);
-   376|      cursor: pointer;
-   377|      user-select: none;
-   378|      transition: background var(--transition-interactive);
-   379|      border-bottom: 1px solid transparent;
-   380|    }
-   381|    .block-header:hover { background: var(--color-surface-2); }
-   382|    .block-card.block-open .block-header { border-bottom-color: var(--color-border); }
-   383|    .block-card.block-done .block-header { background: rgba(74,222,128,0.06); }
-   384|    [data-theme="light"] .block-card.block-done .block-header { background: rgba(22,163,74,0.06); }
-   385|
-   386|    .block-code {
-   387|      font-family: 'Geist Mono', monospace;
-   388|      font-size: var(--text-xs);
-   389|      font-weight: 700;
-   390|      padding: var(--space-1) var(--space-2);
-   391|      border-radius: var(--radius-sm);
-   392|      background: var(--color-surface-2);
-   393|      color: var(--color-text);
-   394|      border: 1px solid var(--color-border);
-   395|      transition: all 0.3s ease;
-   396|    }
-   397|    .block-card.block-done .block-code {
-   398|      background: var(--color-success);
-   399|      color: #0e0e0e;
-   400|      border-color: var(--color-success);
-   401|    }
-   402|    [data-theme="light"] .block-card.block-done .block-code { color: #fff; }
-   403|
-   404|    .block-title {
-   405|      font-family: 'Inter', sans-serif;
-   406|      font-size: var(--text-sm);
-   407|      font-weight: 500;
-   408|      color: var(--color-text);
-   409|      flex: 1;
-   410|    }
-   411|    .block-card.block-done .block-title { color: var(--color-success); }
-   412|
-   413|    .block-count {
-   414|      font-family: 'Geist Mono', monospace;
-   415|      font-size: var(--text-xs);
-   416|      color: var(--color-text-muted);
-   417|      background: var(--color-surface-2);
-   418|      padding: var(--space-1) var(--space-2);
-   419|      border-radius: var(--radius-sm);
-   420|    }
-   421|
-   422|    .block-arrow {
-   423|      color: var(--color-text-muted);
-   424|      transition: transform 0.25s ease;
-   425|      width: 16px; height: 16px;
-   426|    }
-   427|    .block-card.block-open .block-arrow { transform: rotate(180deg); }
-   428|
-   429|    .block-body {
-   430|      max-height: 0;
-   431|      overflow: hidden;
-   432|      transition: max-height 0.25s ease;
-   433|    }
-   434|    .block-card.block-open .block-body { max-height: 3000px; }
-   435|
-   436|    .block-list {
-   437|      padding: var(--space-2) var(--space-4) var(--space-3);
-   438|      display: flex;
-   439|      flex-direction: column;
-   440|    }
-   441|
-   442|    /* CHECKBOX */
-   443|    .checkbox-item {
-   444|      display: flex;
-   445|      align-items: flex-start;
-   446|      gap: var(--space-3);
-   447|      padding: var(--space-2) 0;
-   448|      cursor: pointer;
-   449|      transition: opacity var(--transition-interactive);
-   450|    }
-   451|    .checkbox-item:hover { opacity: 0.85; }
-   452|
-   453|    .checkbox-input {
-   454|      appearance: none;
-   455|      width: 18px; height: 18px;
-   456|      min-width: 18px;
-   457|      border: 2px solid var(--color-border);
-   458|      border-radius: var(--radius-sm);
-   459|      background: var(--color-surface);
-   460|      margin-top: 2px;
-   461|      cursor: pointer;
-   462|      transition: all var(--transition-interactive);
-   463|      position: relative;
-   464|      display: flex; align-items: center; justify-content: center;
-   465|    }
-   466|    .checkbox-input:checked {
-   467|      background: var(--color-primary);
-   468|      border-color: var(--color-primary);
-   469|    }
-   470|    .checkbox-input::after {
-   471|      content: '';
-   472|      width: 5px; height: 9px;
-   473|      border: solid #0e0e0e;
-   474|      border-width: 0 2px 2px 0;
-   475|      transform: rotate(45deg) scale(0);
-   476|      transition: transform 0.15s ease;
-   477|      position: absolute;
-   478|      top: 1px;
-   479|    }
-   480|    [data-theme="light"] .checkbox-input::after { border-color: #fff; }
-   481|    .checkbox-input:checked::after { transform: rotate(45deg) scale(1); }
-   482|
-   483|    .checkbox-text {
-   484|      font-size: var(--text-sm);
-   485|      color: var(--color-text);
-   486|      transition: all var(--transition-interactive);
-   487|      line-height: 1.5;
-   488|    }
-   489|    .checkbox-done .checkbox-text {
-   490|      text-decoration: line-through;
-   491|      color: var(--color-text-faint);
-   492|    }
-   493|
-   494|    /* COMPLETION PULSE */
-   495|    @keyframes pulseGreen {
-   496|      0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
-   497|      70% { box-shadow: 0 0 0 12px rgba(74,222,128,0); }
-   498|      100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
-   499|    }
-   500|    .block-pulse { animation: pulseGreen 0.6s ease; }
-   501|
-   502|    @keyframes highlightYellow {
-   503|      0% { background: rgba(251,191,36,0.15); }
-   504|      100% { background: transparent; }
-   505|    }
-   506|    .highlight-pulse { animation: highlightYellow 1s ease; }
-   507|
-   508|    /* MODAL */
-   509|    .modal-overlay {
-   510|      position: fixed; inset: 0;
-   511|      background: rgba(0,0,0,0.6);
-   512|      display: none; align-items: center; justify-content: center;
-   513|      z-index: 100;
-   514|      backdrop-filter: blur(4px);
-   515|    }
-   516|    .modal-overlay.visible { display: flex; }
-   517|    .modal {
-   518|      background: var(--color-surface);
-   519|      border: 1px solid var(--color-border);
-   520|      border-radius: var(--radius-lg);
-   521|      padding: var(--space-6);
-   522|      max-width: 360px;
-   523|      width: 90%;
-   524|      box-shadow: var(--shadow-xl);
-   525|    }
-   526|    .modal-title {
-   527|      font-family: 'Geist Mono', monospace;
-   528|      font-size: var(--text-lg);
-   529|      font-weight: 600;
-   530|      color: var(--color-error);
-   531|      margin-bottom: var(--space-2);
-   532|    }
-   533|    .modal-text { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-5); }
-   534|    .modal-actions { display: flex; gap: var(--space-3); justify-content: flex-end; }
-   535|    .modal-btn {
-   536|      padding: var(--space-2) var(--space-4);
-   537|      border-radius: var(--radius-md);
-   538|      font-family: 'Geist Mono', monospace;
-   539|      font-size: var(--text-xs);
-   540|      font-weight: 500;
-   541|      border: 1px solid var(--color-border);
-   542|      transition: all var(--transition-interactive);
-   543|    }
-   544|    .modal-btn-secondary { background: var(--color-surface-2); color: var(--color-text); }
-   545|    .modal-btn-secondary:hover { background: var(--color-surface-offset); }
-   546|    .modal-btn-danger { background: var(--color-error); color: #fff; border-color: var(--color-error); }
-   547|    .modal-btn-danger:hover { filter: brightness(0.9); }
-   548|
-   549|    /* HIDDEN */
-   550|    .hidden { display: none !important; }
-   551|
-   552|    /* REDUCED MOTION */
-   553|    @media (prefers-reduced-motion: reduce) {
-   554|      *, *::before, *::after {
-   555|        animation-duration: 0.01ms !important;
-   556|        animation-iteration-count: 1 !important;
-   557|        transition-duration: 0.01ms !important;
-   558|      }
-   559|    }
-   560|
-   561|    /* MOBILE */
-   562|    @media (max-width: 767px) {
-   563|      .app { flex-direction: column; }
-   564|      .sidebar {
-   565|        width: 100%; height: auto;
-   566|        flex-direction: row;
-   567|        border-right: none;
-   568|        border-bottom: 1px solid var(--color-border);
-   569|        padding: var(--space-2) var(--space-3);
-   570|        align-items: center;
-   571|      }
-   572|      .sidebar-title { font-size: var(--text-sm); }
-   573|      .nav-subjects { flex-direction: row; gap: var(--space-1); flex-wrap: wrap; }
-   574|      .nav-link { padding: var(--space-1) var(--space-2); font-size: 0.7rem; }
-   575|      .sidebar-footer { display: none; }
-   576|      .main-inner { padding: var(--space-3); }
-   577|      .sticky-bar { padding: var(--space-2) var(--space-3); top: auto; position: relative; }
-   578|      .filters { position: relative; top: auto; padding: var(--space-2) var(--space-3); }
-   579|      .subject-header { flex-direction: column; gap: var(--space-3); }
-   580|      .subject-actions { flex-wrap: wrap; }
-   581|    }
-   582|  </style>
-   583|</head>
-   584|<body>
-   585|
-   586|<div class="app">
-   587|  <!-- SIDEBAR -->
-   588|  <aside class="sidebar">
-   589|    <div class="sidebar-header">
-   590|      <div class="sidebar-title">IB Study</div>
-   591|      <button class="theme-toggle" id="themeToggle" title="Toggle theme">
-   592|        <i data-lucide="moon" class="theme-icon"></i>
-   593|      </button>
-   594|    </div>
-   595|    <nav class="nav-subjects">
-   596|      <a href="#subject-math" class="nav-link" data-subject="math">
-   597|        <span class="nav-dot" style="background:var(--subject-math)"></span> Math
-   598|      </a>
-   599|      <a href="#subject-physics" class="nav-link" data-subject="physics">
-   600|        <span class="nav-dot" style="background:var(--subject-physics)"></span> Physics
-   601|      </a>
-   602|      <a href="#subject-cs" class="nav-link" data-subject="cs">
-   603|        <span class="nav-dot" style="background:var(--subject-cs)"></span> CS
-   604|      </a>
-   605|      <a href="#subject-econ" class="nav-link" data-subject="econ">
-   606|        <span class="nav-dot" style="background:var(--subject-econ)"></span> Econ
-   607|      </a>
-   608|    </nav>
-   609|    <div class="sidebar-footer">
-   610|      <div class="progress-bar-track">
-   611|        <div class="progress-bar-fill" id="globalProgressFill" style="width:0%"></div>
-   612|      </div>
-   613|      <div class="progress-text" id="globalProgressText">0 / 0 topics done</div>
-   614|    </div>
-   615|  </aside>
-   616|
-   617|  <!-- MAIN -->
-   618|  <main class="main" id="mainScroll">
-   619|    <div class="sticky-bar">
-   620|      <div class="sticky-bar-subject" id="stickySubject">All Subjects</div>
-   621|      <div style="display:flex;align-items:center;gap:var(--space-3)">
-   622|        <div class="sticky-bar-progress" id="stickyProgress">0%</div>
-   623|        <button class="reset-btn" id="resetAllBtn">
-   624|          <i data-lucide="trash-2" style="width:12px;height:12px;"></i> Reset
-   625|        </button>
-   626|      </div>
-   627|    </div>
-   628|
-   629|    <div class="filters" id="filterChips">
-   630|      <button class="chip active" data-filter="all">All</button>
-   631|      <button class="chip" data-filter="math">Math</button>
-   632|      <button class="chip" data-filter="physics">Physics</button>
-   633|      <button class="chip" data-filter="cs">CS</button>
-   634|      <button class="chip" data-filter="econ">Econ</button>
-   635|    </div>
-   636|
-   637|    <div class="main-inner" id="contentArea">
-   638|      <!-- Content injected by JS -->
-   639|    </div>
-   640|  </main>
-   641|</div>
-   642|
-   643|<!-- MODAL -->
-   644|<div class="modal-overlay" id="resetModal">
-   645|  <div class="modal">
-   646|    <div class="modal-title">Reset all progress?</div>
-   647|    <div class="modal-text">This will uncheck every topic. You cannot undo this.</div>
-   648|    <div class="modal-actions">
-   649|      <button class="modal-btn modal-btn-secondary" id="cancelReset">No, keep it</button>
-   650|      <button class="modal-btn modal-btn-danger" id="confirmReset">Yes, reset</button>
-   651|    </div>
-   652|  </div>
-   653|</div>
-   654|
-   655|<script>
-   656|  // ========== DATA ==========
-   657|  const subjects = [
-   658|    {
-   659|      id: 'math', name: 'Math AA HL',
-   660|      accent: 'var(--subject-math)',
-   661|      exams: ['P1 Sun 31 May', 'P2 Mon 2 Jun'],
-   662|      examDates: ['2026-05-31'],
-   663|      blocks: [
-   664|        { code: 'M1', title: 'Sets & Functions (Basics)', topics: [
-   665|          'Real, rational, irrational, integer, natural number sets',
-   666|          'Relations vs functions',
-   667|          'Intervals: open, closed, half-open, half-closed',
-   668|          'Finding domain and range from sets',
-   669|          'Finding domain and range from graphs'
-   670|        ]},
-   671|        { code: 'M2', title: 'Linear & Quadratic Functions', topics: [
-   672|          'All forms of linear equations (slope-intercept, point-slope, standard)',
-   673|          'All forms of quadratic functions',
-   674|          'Completing the square',
-   675|          'Sketching quadratic functions',
-   676|          'Using the discriminant (0, 1, 2 roots relationship to x-axis)',
-   677|          'Finding a quadratic from its graph'
-   678|        ]},
-   679|        { code: 'M3', title: 'Intersections & Polynomials Intro', topics: [
-   680|          'Intersection of quadratic and linear graphs',
-   681|          'Intersection of two quadratic graphs',
-   682|          'Polynomial functions: definition, domain, range',
-   683|          'Radical functions: sketching, domain, range'
-   684|        ]},
-   685|        { code: 'M4', title: 'Functions with GDC & Function Types', topics: [
-   686|          'Graphing functions using the GDC',
-   687|          'Finding turning points using GDC',
-   688|          'Domain and range from GDC',
-   689|          'One-to-one functions',
-   690|          'Many-to-one functions',
-   691|          'Even functions',
-   692|          'Odd functions',
-   693|          'Radical functions (advanced)'
-   694|        ]},
-   695|        { code: 'M5', title: 'Composite & Inverse Functions', topics: [
-   696|          'Composite functions: definition and evaluation',
-   697|          'Inverse functions: finding analytically',
-   698|          'Inverse functions: graphical relationship (reflection in y=x)',
-   699|          'Finding x-intercepts using GDC',
-   700|          'Finding points of intersection between graphs using GDC'
-   701|        ]},
-   702|        { code: 'M6', title: 'Rational Functions (Core)', topics: [
-   703|          'Rational functions: numerator degree < denominator degree',
-   704|          'Vertical asymptotes',
-   705|          'Horizontal asymptotes',
-   706|          'x-intercepts and y-intercepts',
-   707|          'Domain and range',
-   708|          'Sketching rational functions'
-   709|        ]},
-   710|        { code: 'M7', title: 'Advanced Rationals & Absolute Value', topics: [
-   711|          'Rational functions: numerator degree > denominator degree (oblique asymptote)',
-   712|          'Oblique asymptote: finding by polynomial division',
-   713|          'Partial fractions',
-   714|          'Absolute value function: graph, domain, range',
-   715|          'Absolute value equations',
-   716|          'Absolute value inequalities',
-   717|          'Solving absolute value graphically'
-   718|        ]},
-   719|        { code: 'M8', title: 'Transformations & Special Graphs', topics: [
-   720|          'Vertical translation: y = f(x) + a',
-   721|          'Horizontal translation: y = f(x − a)',
-   722|          'Vertical stretch: y = af(x)',
-   723|          'Horizontal stretch: y = f(ax)',
-   724|          'Reflection in x-axis: y = -f(x)',
-   725|          'Reflection in y-axis: y = f(-x)',
-   726|          'Combinations of transformations',
-   727|          'Graph of y = (f(x))²',
-   728|          'Graph of y = 1/f(x)',
-   729|          'Graph of y = f(|x|)'
-   730|        ]},
-   731|        { code: 'M9', title: 'Polynomials & Roots', topics: [
-   732|          'Polynomial long division',
-   733|          'Synthetic division',
-   734|          'Factor theorem',
-   735|          'Polynomial remainder theorem',
-   736|          'Fully factorising a polynomial using synthetic division',
-   737|          'Sum and product of polynomial roots',
-   738|          'Finding equation of cubic from its graph',
-   739|          'Sketching a cubic function'
-   740|        ]},
-   741|        { code: 'M10', title: 'Exponentials, Logs & Systems', topics: [
-   742|          'Laws of exponents (revision)',
-   743|          'Solving exponential equations',
-   744|          'Exponential functions: domain, range, graphs',
-   745|          'Growth and decay models',
-   746|          'Logarithmic functions: domain, range, graphs',
-   747|          'Laws of logarithms',
-   748|          'Solving systems of 3×3 linear equations',
-   749|          'Types of solutions: unique, infinitely many, no solution'
-   750|        ]},
-   751|        { code: 'M11', title: 'Sequences, Series & Financial Math', topics: [
-   752|          'Arithmetic sequences: term formula, common difference',
-   753|          'Arithmetic series: sum formula',
-   754|          'Geometric sequences: term formula, common ratio',
-   755|          'Writing series using sigma notation',
-   756|          'Geometric series: sum formula',
-   757|          'Financial math: compound interest',
-   758|          'Financial math: annuities and loans',
-   759|          'Binomial theorem'
-   760|        ]},
-   761|        { code: 'M12', title: 'Trigonometry', topics: [
-   762|          'Bearings',
-   763|          'Sine rule',
-   764|          'Cosine rule',
-   765|          'Ambiguous case (sine rule)',
-   766|          'Unit circle: angles and coordinates',
-   767|          'Trig functions and their graphs (sin, cos, tan)',
-   768|          'Solving trigonometric equations (general and restricted)',
-   769|          'Compound angle identities',
-   770|          'Modelling using trig functions',
-   771|          'Inverse trig functions'
-   772|        ]},
-   773|        { code: 'M13', title: 'Calculus', topics: [
-   774|          'Power rule for differentiation',
-   775|          'Sum/difference rule',
-   776|          'Product rule',
-   777|          'Quotient rule',
-   778|          'Chain rule',
-   779|          'Derivatives of trig functions',
-   780|          'Finding equations of tangents to curves',
-   781|          'Finding equations of normals to curves',
-   782|          'Basic differential equations'
-   783|        ]}
-   784|      ]
-   785|    },
-   786|    {
-   787|      id: 'physics', name: 'Physics HL',
-   788|      accent: 'var(--subject-physics)',
-   789|      exams: ['P1 Wed 3 Jun', 'P2 Thu 4 Jun'],
-   790|      examDates: ['2026-06-03'],
-   791|      blocks: [
-   792|        { code: 'P1', title: 'Kinematics (Theme A)', topics: [
-   793|          'Displacement, velocity, acceleration definitions',
-   794|          'Constant-acceleration equations (SUVAT)',
-   795|          'Displacement-time graph analysis (gradient = velocity)',
-   796|          'Velocity-time graph analysis (gradient = acceleration, area = displacement)',
-   797|          'Projectile motion: horizontal and vertical components',
-   798|          'Projectile motion: range and maximum height'
-   799|        ]},
-   800|        { code: 'P2', title: 'Forces & Momentum (Theme A)', topics: [
-   801|          'Free-body diagrams',
-   802|          'Weight, normal force, friction, tension',
-   803|          "Newton's first law",
-   804|          "Newton's second law (F = ma)",
-   805|          "Newton's third law",
-   806|          'Impulse and change in momentum (J = Delta p)',
-   807|          'Conservation of momentum (1D)',
-   808|          'Conservation of momentum (2D)',
-   809|          'Elastic vs inelastic collisions'
-   810|        ]},
-   811|        { code: 'P3', title: 'Work, Energy & Power (Theme A)', topics: [
-   812|          'Work done by a constant force',
-   813|          'Work-energy theorem',
-   814|          'Kinetic energy',
-   815|          'Gravitational potential energy',
-   816|          'Conservation of mechanical energy',
-   817|          'Power: average and instantaneous',
-   818|          'Efficiency'
-   819|        ]},
-   820|        { code: 'P4', title: 'Advanced Mechanics (Theme A)', topics: [
-   821|          'Circular motion: centripetal acceleration',
-   822|          'Circular motion: centripetal force',
-   823|          'Applications of circular motion (banked tracks, satellites)',
-   824|          'Special relativity: time dilation (HL)',
-   825|          'Special relativity: length contraction (HL)'
-   826|        ]},
-   827|        { code: 'P5', title: 'Thermal Energy (Theme B)', topics: [
-   828|          'Specific heat capacity: formula and calorimetry problems',
-   829|          'Specific latent heat: fusion and vaporisation',
-   830|          'Phase change diagrams (heating curves)',
-   831|          'Conduction, convection, radiation mechanisms',
-   832|          'Black-body radiation concept'
-   833|        ]},
-   834|        { code: 'P6', title: 'Gases & Thermodynamics (Theme B)', topics: [
-   835|          'Ideal gas law: PV = nRT',
-   836|          "Boyle's law, Charles's law, Gay-Lussac's law",
-   837|          'Kinetic theory: pressure from microscopic model',
-   838|          'Internal energy',
-   839|          "First law of thermodynamics (Delta U = Q - W)",
-   840|          'Isobaric, isochoric, isothermal, adiabatic processes',
-   841|          'P-V diagrams',
-   842|          'Thermal efficiency basics'
-   843|        ]},
-   844|        { code: 'P7', title: 'Gravitational Fields (Theme D)', topics: [
-   845|          'Gravitational field strength g',
-   846|          "Newton's law of gravitation",
-   847|          'Gravitational field lines and equipotential surfaces',
-   848|          'Gravitational potential',
-   849|          'Orbital mechanics: centripetal force = gravitational force',
-   850|          'Geostationary and polar orbits'
-   851|        ]},
-   852|        { code: 'P8', title: 'Electric & Magnetic Fields (Theme D)', topics: [
-   853|          "Coulomb's law",
-   854|          'Electric field strength: E = F/q',
-   855|          'Electric field lines and equipotential surfaces',
-   856|          'Electric potential',
-   857|          'Uniform electric fields',
-   858|          'Magnetic field around a straight wire',
-   859|          'Magnetic field inside a solenoid',
-   860|          'Force on a current-carrying conductor (F = BIL)',
-   861|          'Force on a moving charge (F = qvB)'
-   862|        ]},
-   863|        { code: 'P9', title: 'Motion in EM Fields (Theme D)', topics: [
-   864|          'Circular motion of a charged particle in a magnetic field',
-   865|          'Helical motion',
-   866|          'Velocity selector',
-   867|          'Mass spectrometer principle'
-   868|        ]},
-   869|        { code: 'P10', title: 'Electromagnetic Induction (Theme D)', topics: [
-   870|          'Magnetic flux (Phi = BA cos theta)',
-   871|          "Faraday's law of induction",
-   872|          "Lenz's law",
-   873|          'EMF in a moving conductor (epsilon = BLv)',
-   874|          'Simple AC generator',
-   875|          'Mixed fields + mechanics problems'
-   876|        ]}
-   877|      ]
-   878|    },
-   879|    {
-   880|      id: 'cs', name: 'Computer Science HL',
-   881|      accent: 'var(--subject-cs)',
-   882|      exams: ['P1 Sun 7 Jun', 'P2 Mon 8 Jun'],
-   883|      examDates: ['2026-06-07'],
-   884|      blocks: [
-   885|        { code: 'C1', title: 'Hardware & Operating Systems (A1)', topics: [
-   886|          'CPU components: ALU, CU, registers, cache, clock',
-   887|          'Memory hierarchy: registers, cache, RAM, secondary storage',
-   888|          'Secondary storage types (HDD, SSD, optical)',
-   889|          'Input/output devices',
-   890|          'GPU and parallel processing concepts',
-   891|          'OS functions: process/memory/file/I/O management',
-   892|          'Multitasking and scheduling',
-   893|          'Control systems: sensors and actuators'
-   894|        ]},
-   895|        { code: 'C2', title: 'Data Representation & Logic (A1)', topics: [
-   896|          'Binary number system and conversion',
-   897|          'Hexadecimal and conversion',
-   898|          "Two's complement representation",
-   899|          'Fixed-point and floating-point concepts',
-   900|          'Basic logic gates: AND, OR, NOT, NAND, NOR, XOR',
-   901|          'Truth tables',
-   902|          'Simple Boolean expressions',
-   903|          'Boolean simplification basics'
-   904|        ]},
-   905|        { code: 'C3', title: 'Computational Thinking (B1)', topics: [
-   906|          'Problem specification and requirements',
-   907|          'Decomposition',
-   908|          'Abstraction',
-   909|          'Pattern recognition',
-   910|          'Algorithm design: inputs, outputs, pre/post-conditions',
-   911|          'Trace tables',
-   912|          'Pseudocode conventions'
-   913|        ]},
-   914|        { code: 'C4', title: 'Core Programming (B2)', topics: [
-   915|          'Variables and data types',
-   916|          'Expressions and operators',
-   917|          'Selection: if/else, nested if, case/switch',
-   918|          'Iteration: for loops, while loops, repeat-until',
-   919|          'Procedures and functions',
-   920|          'Parameters: passing by value',
-   921|          'Local vs global variables',
-   922|          'Error types: syntax, logic, runtime'
-   923|        ]},
-   924|        { code: 'C5', title: 'Data Structures (B2)', topics: [
-   925|          'Arrays: declaration, access, traversal',
-   926|          '2D arrays',
-   927|          'Lists vs arrays (static vs dynamic)',
-   928|          'Stacks: push, pop, peek, isEmpty, LIFO principle',
-   929|          'Queues: enqueue, dequeue, peek, isEmpty, FIFO principle',
-   930|          'Use cases for stacks (call stack, undo)',
-   931|          'Use cases for queues (print queue, scheduling)'
-   932|        ]},
-   933|        { code: 'C6', title: 'Algorithms (B2)', topics: [
-   934|          'Linear search: algorithm and trace',
-   935|          'Binary search: algorithm, trace, requirement (sorted)',
-   936|          'Bubble sort: algorithm, trace, comparisons',
-   937|          'Insertion sort: algorithm, trace',
-   938|          'Selection sort: algorithm, trace',
-   939|          'Merge sort: concept and divide/conquer idea',
-   940|          'Big-O: O(1), O(n), O(n²), O(n log n) — which algorithm maps to which'
-   941|        ]},
-   942|        { code: 'C7', title: 'File Handling (B2)', topics: [
-   943|          'Opening files (read, write, append modes)',
-   944|          'Reading lines from a text file',
-   945|          'Writing to a text file',
-   946|          'EOF detection',
-   947|          'Error handling in file I/O',
-   948|          'Combining file I/O with loops and conditionals'
-   949|        ]},
-   950|        { code: 'C8', title: 'OOP & Abstract Data Types (B3.1 + B4.1)', topics: [
-   951|          'Classes and objects',
-   952|          'Attributes and methods',
-   953|          'Constructors',
-   954|          'Encapsulation (private vs public)',
-   955|          'Instantiating objects',
-   956|          'Calling methods on objects',
-   957|          'Conceptual linked lists: nodes, head pointer, traversal',
-   958|          'Conceptual binary trees: nodes, left/right children, root',
-   959|          'Advantages of linked lists over arrays',
-   960|          'Advantages of trees for searching'
-   961|        ]}
-   962|      ]
-   963|    },
-   964|    {
-   965|      id: 'econ', name: 'Economics HL',
-   966|      accent: 'var(--subject-econ)',
-   967|      exams: ['P3 Sun 14 Jun', 'P2 Sun 14 Jun'],
-   968|      examDates: ['2026-06-14'],
-   969|      blocks: [
-   970|        { code: 'E1', title: 'Introduction to Economics (Chapter 1)', topics: [
-   971|          'Scarcity and the economic problem',
-   972|          'Choice and opportunity cost',
-   973|          'Production possibility curve (PPC): shape and shifts',
-   974|          'Economic systems: free market, planned, mixed',
-   975|          'Positive vs normative economics',
-   976|          'Rational choice exercise concepts'
-   977|        ]},
-   978|        { code: 'E2', title: 'Competitive Markets (Chapter 2)', topics: [
-   979|          "Law of demand and demand curve",
-   980|          'Determinants of demand (shifters)',
-   981|          "Law of supply and supply curve",
-   982|          'Determinants of supply (shifters)',
-   983|          'Market equilibrium: price and quantity',
-   984|          'Excess demand and excess supply',
-   985|          'Effects of shifts in demand on equilibrium',
-   986|          'Effects of shifts in supply on equilibrium'
-   987|        ]},
-   988|        { code: 'E3', title: 'Elasticities (Chapter 3)', topics: [
-   989|          'Price elasticity of demand (PED): formula and calculation',
-   990|          'PED determinants',
-   991|          'PED and total revenue relationship',
-   992|          'Price elasticity of supply (PES): formula and calculation',
-   993|          'PES determinants',
-   994|          'Cross elasticity of demand (XED): formula, substitutes vs complements',
-   995|          'Income elasticity of demand (YED): formula, normal vs inferior goods',
-   996|          'Applications of elasticity in policy'
-   997|        ]},
-   998|        { code: 'E4', title: 'Government Intervention (Chapter 4)', topics: [
-   999|          'Price ceilings: diagram, effects, stakeholders',
-  1000|          'Price floors: diagram, effects, stakeholders',
-  1001|
+<!DOCTYPE html>
+<html lang="en">
+<head>
+ <meta charset="UTF-8" />
+ <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+ <title>IB Study Checklist</title>
+ <link rel="preconnect" href="https://fonts.googleapis.com">
+ <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+ <link href="https://fonts.googleapis.com/css2?family=Geist+Mono:wght@400;500;600;700&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+ <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.min.js"></script>
+ <style>
+   /* Art direction: exam war room → focused, intense, purposeful
+      Palette: near-black surfaces, warm cream text, sharp teal accent
+      Typography: 'Geist Mono' (headings/labels) + 'Inter' (body) — clarity + slight technical edge
+      Density: dense — this is a tool, not a landing page */
+
+   /* ===== BASE RESET ===== */
+   *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+   html { scroll-behavior: smooth; -webkit-font-smoothing: antialiased; -moz-osx-font-smoothing: grayscale; }
+   body { font-family: 'Inter', system-ui, -apple-system, sans-serif; line-height: 1.5; color: var(--color-text); background: var(--color-bg); min-height: 100vh; }
+   a { text-decoration: none; color: inherit; }
+   button { font-family: inherit; border: none; background: none; cursor: pointer; color: inherit; }
+   ul { list-style: none; }
+   input, label { font-family: inherit; }
+   img { max-width: 100%; display: block; }
+   ::-webkit-scrollbar { width: 8px; }
+   ::-webkit-scrollbar-track { background: transparent; }
+   ::-webkit-scrollbar-thumb { background: var(--color-surface-offset); border-radius: 4px; }
+
+   /* ===== TOKENS ===== */
+   :root {
+     /* Radius */
+     --radius-none: 0;
+     --radius-sm: 4px;
+     --radius-base: 6px;
+     --radius-md: 8px;
+     --radius-lg: 12px;
+     --radius-xl: 16px;
+     --radius-2xl: 24px;
+     --radius-full: 9999px;
+
+     /* Space */
+     --space-0: 0;
+     --space-1: 4px;
+     --space-2: 8px;
+     --space-3: 12px;
+     --space-4: 16px;
+     --space-5: 20px;
+     --space-6: 24px;
+     --space-8: 32px;
+     --space-10: 40px;
+     --space-12: 48px;
+     --space-16: 64px;
+     --space-20: 80px;
+     --space-24: 96px;
+
+     /* Text */
+     --text-xs: 0.75rem;
+     --text-sm: 0.8125rem;
+     --text-base: 0.9375rem;
+     --text-md: 1rem;
+     --text-lg: 1.125rem;
+     --text-xl: 1.375rem;
+     --text-2xl: 1.75rem;
+     --text-3xl: 2.25rem;
+
+     /* Shadows */
+     --shadow-sm: 0 1px 2px rgba(0,0,0,0.2);
+     --shadow-md: 0 4px 8px rgba(0,0,0,0.25);
+     --shadow-lg: 0 8px 24px rgba(0,0,0,0.3);
+     --shadow-xl: 0 16px 48px rgba(0,0,0,0.35);
+
+     /* Transition */
+     --transition-interactive: 150ms ease;
+   }
+
+   :root, [data-theme="dark"] {
+     --color-bg:              #0e0e0e;
+     --color-surface:         #141414;
+     --color-surface-2:       #1a1a1a;
+     --color-surface-offset:  #202020;
+     --color-border:          #2a2a2a;
+     --color-divider:         #252525;
+     --color-text:            #e8e4dc;
+     --color-text-muted:      #7a7670;
+     --color-text-faint:      #3e3c39;
+     --color-primary:         #2dd4bf;
+     --color-primary-hover:   #14b8a6;
+     --color-success:         #4ade80;
+     --color-warning:         #fb923c;
+     --color-error:           #f87171;
+
+     /* Subject accents */
+     --subject-math:          #2dd4bf;
+     --subject-physics:       #fb923c;
+     --subject-cs:            #60a5fa;
+     --subject-econ:          #fbbf24;
+   }
+
+   [data-theme="light"] {
+     --color-bg:              #f5f4f0;
+     --color-surface:         #fafaf8;
+     --color-surface-2:       #ffffff;
+     --color-surface-offset:  #eeecea;
+     --color-border:          #d8d6d0;
+     --color-divider:         #e0deda;
+     --color-text:            #1c1b18;
+     --color-text-muted:      #6b6a64;
+     --color-text-faint:      #b8b6b0;
+     --color-primary:         #0d9488;
+     --color-primary-hover:   #0f766e;
+     --color-success:         #16a34a;
+     --color-warning:         #ea580c;
+     --color-error:           #dc2626;
+
+     --subject-math:          #0d9488;
+     --subject-physics:       #ea580c;
+     --subject-cs:            #2563eb;
+     --subject-econ:          #d97706;
+   }
+
+   /* ===== LAYOUT ===== */
+   .app { display: flex; height: 100vh; overflow: hidden; }
+
+   /* SIDEBAR */
+   .sidebar {
+     width: 220px;
+     flex-shrink: 0;
+     background: var(--color-surface);
+     border-right: 1px solid var(--color-border);
+     display: flex;
+     flex-direction: column;
+     padding: var(--space-4);
+     gap: var(--space-4);
+     z-index: 10;
+   }
+   .sidebar-header {
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+   }
+   .sidebar-title {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-lg);
+     font-weight: 600;
+     color: var(--color-primary);
+   }
+   .theme-toggle {
+     width: 32px; height: 32px;
+     display: flex; align-items: center; justify-content: center;
+     border-radius: var(--radius-md);
+     color: var(--color-text-muted);
+     transition: color var(--transition-interactive), background var(--transition-interactive);
+   }
+   .theme-toggle:hover { background: var(--color-surface-offset); color: var(--color-text); }
+
+   .nav-subjects { display: flex; flex-direction: column; gap: var(--space-1); flex: 1; }
+   .nav-link {
+     display: flex;
+     align-items: center;
+     gap: var(--space-3);
+     padding: var(--space-2) var(--space-3);
+     border-radius: var(--radius-md);
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-sm);
+     font-weight: 500;
+     color: var(--color-text-muted);
+     transition: all var(--transition-interactive);
+     border-left: 3px solid transparent;
+   }
+   .nav-link:hover { background: var(--color-surface-2); color: var(--color-text); }
+   .nav-link.active { background: var(--color-surface-offset); color: var(--color-text); border-left-color: var(--color-primary); }
+   .nav-dot { width: 8px; height: 8px; border-radius: var(--radius-full); }
+
+   .sidebar-footer {
+     border-top: 1px solid var(--color-border);
+     padding-top: var(--space-4);
+     display: flex;
+     flex-direction: column;
+     gap: var(--space-2);
+   }
+   .progress-bar-track {
+     width: 100%; height: 6px;
+     background: var(--color-surface-offset);
+     border-radius: var(--radius-full);
+     overflow: hidden;
+   }
+   .progress-bar-fill {
+     height: 100%; background: var(--color-primary);
+     border-radius: var(--radius-full);
+     transition: width 0.4s ease;
+   }
+   .progress-text {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     color: var(--color-text-muted);
+   }
+
+   /* MAIN */
+   .main {
+     flex: 1;
+     overflow-y: auto;
+     overflow-x: hidden;
+     position: relative;
+   }
+   .main-inner {
+     max-width: 960px;
+     margin: 0 auto;
+     padding: var(--space-6) var(--space-6) var(--space-20);
+   }
+
+   /* STICKY HEADER */
+   .sticky-bar {
+     position: sticky;
+     top: 0;
+     z-index: 5;
+     background: var(--color-bg);
+     backdrop-filter: blur(12px);
+     border-bottom: 1px solid var(--color-border);
+     padding: var(--space-3) var(--space-6);
+     display: flex;
+     align-items: center;
+     justify-content: space-between;
+     gap: var(--space-4);
+   }
+   .sticky-bar-subject {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-md);
+     font-weight: 600;
+     color: var(--color-text);
+   }
+   .sticky-bar-progress {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-sm);
+     color: var(--color-text-muted);
+   }
+
+   /* FILTER CHIPS */
+   .filters {
+     position: sticky;
+     top: 53px;
+     z-index: 4;
+     background: var(--color-bg);
+     padding: var(--space-3) var(--space-6);
+     display: flex;
+     gap: var(--space-2);
+     flex-wrap: wrap;
+     border-bottom: 1px solid var(--color-border);
+   }
+   .chip {
+     padding: var(--space-1) var(--space-3);
+     border-radius: var(--radius-full);
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     font-weight: 500;
+     border: 1px solid var(--color-border);
+     color: var(--color-text-muted);
+     background: var(--color-surface);
+     transition: all var(--transition-interactive);
+     cursor: pointer;
+   }
+   .chip:hover { border-color: var(--color-text-muted); color: var(--color-text); }
+   .chip.active { background: var(--color-primary); color: #0e0e0e; border-color: var(--color-primary); }
+   [data-theme="light"] .chip.active { color: #fff; }
+
+   /* RESET */
+   .reset-btn {
+     display: flex; align-items: center; gap: var(--space-2);
+     padding: var(--space-2) var(--space-3);
+     border-radius: var(--radius-md);
+     background: rgba(248,113,113,0.12);
+     color: var(--color-error);
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     font-weight: 500;
+     transition: background var(--transition-interactive);
+     white-space: nowrap;
+   }
+   .reset-btn:hover { background: rgba(248,113,113,0.2); }
+
+   /* SUBJECT SECTION */
+   .subject-section {
+     margin-top: var(--space-10);
+     animation: fadeIn 0.4s ease both;
+   }
+   .subject-section:first-child { margin-top: var(--space-4); }
+
+   @keyframes fadeIn {
+     from { opacity: 0; transform: translateY(12px); }
+     to { opacity: 1; transform: translateY(0); }
+   }
+
+   /* SUBJECT HEADER */
+   .subject-header {
+     display: flex;
+     align-items: flex-start;
+     justify-content: space-between;
+     gap: var(--space-6);
+     padding: var(--space-5);
+     background: var(--color-surface);
+     border: 1px solid var(--color-border);
+     border-radius: var(--radius-lg);
+     margin-bottom: var(--space-4);
+   }
+   .subject-info { display: flex; flex-direction: column; gap: var(--space-2); }
+   .subject-name {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xl);
+     font-weight: 700;
+   }
+   .subject-meta {
+     display: flex;
+     align-items: center;
+     gap: var(--space-3);
+     flex-wrap: wrap;
+   }
+   .badge {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     font-weight: 500;
+     padding: var(--space-1) var(--space-2);
+     border-radius: var(--radius-sm);
+   }
+   .badge-exam { background: var(--color-surface-2); color: var(--color-text-muted); border: 1px solid var(--color-border); }
+   .badge-count { background: var(--color-surface-2); color: var(--color-text); border: 1px solid var(--color-border); }
+   .badge-countdown {
+     font-size: var(--text-xs);
+     font-weight: 700;
+     padding: var(--space-1) var(--space-2);
+     border-radius: var(--radius-sm);
+   }
+   .countdown-green { background: rgba(74,222,128,0.12); color: var(--color-success); }
+   .countdown-orange { background: rgba(251,146,60,0.12); color: var(--color-warning); }
+   .countdown-red { background: rgba(248,113,113,0.12); color: var(--color-error); }
+
+   .subject-actions { display: flex; gap: var(--space-2); align-items: center; }
+   .btn-sm {
+     display: flex; align-items: center; gap: var(--space-2);
+     padding: var(--space-2) var(--space-3);
+     border-radius: var(--radius-md);
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     font-weight: 500;
+     background: var(--color-surface-2);
+     color: var(--color-text-muted);
+     border: 1px solid var(--color-border);
+     transition: all var(--transition-interactive);
+     white-space: nowrap;
+   }
+   .btn-sm:hover { background: var(--color-surface-offset); color: var(--color-text); }
+   .btn-sm svg { width: 14px; height: 14px; }
+
+   /* PROGRESS RING */
+   .progress-ring { flex-shrink: 0; }
+   .progress-ring circle { fill: none; transition: stroke-dashoffset 0.4s ease; }
+   .progress-ring-track { stroke: var(--color-surface-offset); }
+   .progress-ring-fill { stroke-linecap: round; }
+
+   /* BLOCK CARD */
+   .block-card {
+     background: var(--color-surface);
+     border: 1px solid var(--color-border);
+     border-radius: var(--radius-lg);
+     margin-bottom: var(--space-3);
+     overflow: hidden;
+     transition: border-color var(--transition-interactive);
+   }
+   .block-card.block-done { border-color: rgba(74,222,128,0.3); }
+   [data-theme="light"] .block-card.block-done { border-color: rgba(22,163,74,0.3); }
+
+   .block-header {
+     display: flex;
+     align-items: center;
+     gap: var(--space-3);
+     padding: var(--space-3) var(--space-4);
+     cursor: pointer;
+     user-select: none;
+     transition: background var(--transition-interactive);
+     border-bottom: 1px solid transparent;
+   }
+   .block-header:hover { background: var(--color-surface-2); }
+   .block-card.block-open .block-header { border-bottom-color: var(--color-border); }
+   .block-card.block-done .block-header { background: rgba(74,222,128,0.06); }
+   [data-theme="light"] .block-card.block-done .block-header { background: rgba(22,163,74,0.06); }
+
+   .block-code {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     font-weight: 700;
+     padding: var(--space-1) var(--space-2);
+     border-radius: var(--radius-sm);
+     background: var(--color-surface-2);
+     color: var(--color-text);
+     border: 1px solid var(--color-border);
+     transition: all 0.3s ease;
+   }
+   .block-card.block-done .block-code {
+     background: var(--color-success);
+     color: #0e0e0e;
+     border-color: var(--color-success);
+   }
+   [data-theme="light"] .block-card.block-done .block-code { color: #fff; }
+
+   .block-title {
+     font-family: 'Inter', sans-serif;
+     font-size: var(--text-sm);
+     font-weight: 500;
+     color: var(--color-text);
+     flex: 1;
+   }
+   .block-card.block-done .block-title { color: var(--color-success); }
+
+   .block-count {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     color: var(--color-text-muted);
+     background: var(--color-surface-2);
+     padding: var(--space-1) var(--space-2);
+     border-radius: var(--radius-sm);
+   }
+
+   .block-arrow {
+     color: var(--color-text-muted);
+     transition: transform 0.25s ease;
+     width: 16px; height: 16px;
+   }
+   .block-card.block-open .block-arrow { transform: rotate(180deg); }
+
+   .block-body {
+     max-height: 0;
+     overflow: hidden;
+     transition: max-height 0.25s ease;
+   }
+   .block-card.block-open .block-body { max-height: 3000px; }
+
+   .block-list {
+     padding: var(--space-2) var(--space-4) var(--space-3);
+     display: flex;
+     flex-direction: column;
+   }
+
+   /* CHECKBOX */
+   .checkbox-item {
+     display: flex;
+     align-items: flex-start;
+     gap: var(--space-3);
+     padding: var(--space-2) 0;
+     cursor: pointer;
+     transition: opacity var(--transition-interactive);
+   }
+   .checkbox-item:hover { opacity: 0.85; }
+
+   .checkbox-input {
+     appearance: none;
+     width: 18px; height: 18px;
+     min-width: 18px;
+     border: 2px solid var(--color-border);
+     border-radius: var(--radius-sm);
+     background: var(--color-surface);
+     margin-top: 2px;
+     cursor: pointer;
+     transition: all var(--transition-interactive);
+     position: relative;
+     display: flex; align-items: center; justify-content: center;
+   }
+   .checkbox-input:checked {
+     background: var(--color-primary);
+     border-color: var(--color-primary);
+   }
+   .checkbox-input::after {
+     content: '';
+     width: 5px; height: 9px;
+     border: solid #0e0e0e;
+     border-width: 0 2px 2px 0;
+     transform: rotate(45deg) scale(0);
+     transition: transform 0.15s ease;
+     position: absolute;
+     top: 1px;
+   }
+   [data-theme="light"] .checkbox-input::after { border-color: #fff; }
+   .checkbox-input:checked::after { transform: rotate(45deg) scale(1); }
+
+   .checkbox-text {
+     font-size: var(--text-sm);
+     color: var(--color-text);
+     transition: all var(--transition-interactive);
+     line-height: 1.5;
+   }
+   .checkbox-done .checkbox-text {
+     text-decoration: line-through;
+     color: var(--color-text-faint);
+   }
+
+   /* COMPLETION PULSE */
+   @keyframes pulseGreen {
+     0% { box-shadow: 0 0 0 0 rgba(74,222,128,0.4); }
+     70% { box-shadow: 0 0 0 12px rgba(74,222,128,0); }
+     100% { box-shadow: 0 0 0 0 rgba(74,222,128,0); }
+   }
+   .block-pulse { animation: pulseGreen 0.6s ease; }
+
+   @keyframes highlightYellow {
+     0% { background: rgba(251,191,36,0.15); }
+     100% { background: transparent; }
+   }
+   .highlight-pulse { animation: highlightYellow 1s ease; }
+
+   /* MODAL */
+   .modal-overlay {
+     position: fixed; inset: 0;
+     background: rgba(0,0,0,0.6);
+     display: none; align-items: center; justify-content: center;
+     z-index: 100;
+     backdrop-filter: blur(4px);
+   }
+   .modal-overlay.visible { display: flex; }
+   .modal {
+     background: var(--color-surface);
+     border: 1px solid var(--color-border);
+     border-radius: var(--radius-lg);
+     padding: var(--space-6);
+     max-width: 360px;
+     width: 90%;
+     box-shadow: var(--shadow-xl);
+   }
+   .modal-title {
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-lg);
+     font-weight: 600;
+     color: var(--color-error);
+     margin-bottom: var(--space-2);
+   }
+   .modal-text { font-size: var(--text-sm); color: var(--color-text-muted); margin-bottom: var(--space-5); }
+   .modal-actions { display: flex; gap: var(--space-3); justify-content: flex-end; }
+   .modal-btn {
+     padding: var(--space-2) var(--space-4);
+     border-radius: var(--radius-md);
+     font-family: 'Geist Mono', monospace;
+     font-size: var(--text-xs);
+     font-weight: 500;
+     border: 1px solid var(--color-border);
+     transition: all var(--transition-interactive);
+   }
+   .modal-btn-secondary { background: var(--color-surface-2); color: var(--color-text); }
+   .modal-btn-secondary:hover { background: var(--color-surface-offset); }
+   .modal-btn-danger { background: var(--color-error); color: #fff; border-color: var(--color-error); }
+   .modal-btn-danger:hover { filter: brightness(0.9); }
+
+   /* HIDDEN */
+   .hidden { display: none !important; }
+
+   /* REDUCED MOTION */
+   @media (prefers-reduced-motion: reduce) {
+     *, *::before, *::after {
+       animation-duration: 0.01ms !important;
+       animation-iteration-count: 1 !important;
+       transition-duration: 0.01ms !important;
+     }
+   }
+
+   /* MOBILE */
+   @media (max-width: 767px) {
+     .app { flex-direction: column; }
+     .sidebar {
+       width: 100%; height: auto;
+       flex-direction: row;
+       border-right: none;
+       border-bottom: 1px solid var(--color-border);
+       padding: var(--space-2) var(--space-3);
+       align-items: center;
+     }
+     .sidebar-title { font-size: var(--text-sm); }
+     .nav-subjects { flex-direction: row; gap: var(--space-1); flex-wrap: wrap; }
+     .nav-link { padding: var(--space-1) var(--space-2); font-size: 0.7rem; }
+     .sidebar-footer { display: none; }
+     .main-inner { padding: var(--space-3); }
+     .sticky-bar { padding: var(--space-2) var(--space-3); top: auto; position: relative; }
+     .filters { position: relative; top: auto; padding: var(--space-2) var(--space-3); }
+     .subject-header { flex-direction: column; gap: var(--space-3); }
+     .subject-actions { flex-wrap: wrap; }
+   }
+ </style>
+</head>
+<body>
+
+<div class="app">
+ <!-- SIDEBAR -->
+ <aside class="sidebar">
+   <div class="sidebar-header">
+     <div class="sidebar-title">IB Study</div>
+     <button class="theme-toggle" id="themeToggle" title="Toggle theme">
+       <i data-lucide="moon" class="theme-icon"></i>
+     </button>
+   </div>
+   <nav class="nav-subjects">
+     <a href="#subject-math" class="nav-link" data-subject="math">
+       <span class="nav-dot" style="background:var(--subject-math)"></span> Math
+     </a>
+     <a href="#subject-physics" class="nav-link" data-subject="physics">
+       <span class="nav-dot" style="background:var(--subject-physics)"></span> Physics
+     </a>
+     <a href="#subject-cs" class="nav-link" data-subject="cs">
+       <span class="nav-dot" style="background:var(--subject-cs)"></span> CS
+     </a>
+     <a href="#subject-econ" class="nav-link" data-subject="econ">
+       <span class="nav-dot" style="background:var(--subject-econ)"></span> Econ
+     </a>
+   </nav>
+   <div class="sidebar-footer">
+     <div class="progress-bar-track">
+       <div class="progress-bar-fill" id="globalProgressFill" style="width:0%"></div>
+     </div>
+     <div class="progress-text" id="globalProgressText">0 / 0 topics done</div>
+   </div>
+ </aside>
+
+ <!-- MAIN -->
+ <main class="main" id="mainScroll">
+   <div class="sticky-bar">
+     <div class="sticky-bar-subject" id="stickySubject">All Subjects</div>
+     <div style="display:flex;align-items:center;gap:var(--space-3)">
+       <div class="sticky-bar-progress" id="stickyProgress">0%</div>
+       <button class="reset-btn" id="resetAllBtn">
+         <i data-lucide="trash-2" style="width:12px;height:12px;"></i> Reset
+       </button>
+     </div>
+   </div>
+
+   <div class="filters" id="filterChips">
+     <button class="chip active" data-filter="all">All</button>
+     <button class="chip" data-filter="math">Math</button>
+     <button class="chip" data-filter="physics">Physics</button>
+     <button class="chip" data-filter="cs">CS</button>
+     <button class="chip" data-filter="econ">Econ</button>
+   </div>
+
+   <div class="main-inner" id="contentArea">
+     <!-- Content injected by JS -->
+   </div>
+ </main>
+</div>
+
+<!-- MODAL -->
+<div class="modal-overlay" id="resetModal">
+ <div class="modal">
+   <div class="modal-title">Reset all progress?</div>
+   <div class="modal-text">This will uncheck every topic. You cannot undo this.</div>
+   <div class="modal-actions">
+     <button class="modal-btn modal-btn-secondary" id="cancelReset">No, keep it</button>
+     <button class="modal-btn modal-btn-danger" id="confirmReset">Yes, reset</button>
+   </div>
+ </div>
+</div>
+
+<script>
+ // ========== DATA ==========
+ const subjects = [
+   {
+     id: 'math', name: 'Math AA HL',
+     accent: 'var(--subject-math)',
+     exams: ['P1 Sun 31 May', 'P2 Mon 2 Jun'],
+     examDates: ['2026-05-31'],
+     blocks: [
+       { code: 'M1', title: 'Sets & Functions (Basics)', topics: [
+         'Real, rational, irrational, integer, natural number sets',
+         'Relations vs functions',
+         'Intervals: open, closed, half-open, half-closed',
+         'Finding domain and range from sets',
+         'Finding domain and range from graphs'
+       ]},
+       { code: 'M2', title: 'Linear & Quadratic Functions', topics: [
+         'All forms of linear equations (slope-intercept, point-slope, standard)',
+         'All forms of quadratic functions',
+         'Completing the square',
+         'Sketching quadratic functions',
+         'Using the discriminant (0, 1, 2 roots relationship to x-axis)',
+         'Finding a quadratic from its graph'
+       ]},
+       { code: 'M3', title: 'Intersections & Polynomials Intro', topics: [
+         'Intersection of quadratic and linear graphs',
+         'Intersection of two quadratic graphs',
+         'Polynomial functions: definition, domain, range',
+         'Radical functions: sketching, domain, range'
+       ]},
+       { code: 'M4', title: 'Functions with GDC & Function Types', topics: [
+         'Graphing functions using the GDC',
+         'Finding turning points using GDC',
+         'Domain and range from GDC',
+         'One-to-one functions',
+         'Many-to-one functions',
+         'Even functions',
+         'Odd functions',
+         'Radical functions (advanced)'
+       ]},
+       { code: 'M5', title: 'Composite & Inverse Functions', topics: [
+         'Composite functions: definition and evaluation',
+         'Inverse functions: finding analytically',
+         'Inverse functions: graphical relationship (reflection in y=x)',
+         'Finding x-intercepts using GDC',
+         'Finding points of intersection between graphs using GDC'
+       ]},
+       { code: 'M6', title: 'Rational Functions (Core)', topics: [
+         'Rational functions: numerator degree < denominator degree',
+         'Vertical asymptotes',
+         'Horizontal asymptotes',
+         'x-intercepts and y-intercepts',
+         'Domain and range',
+         'Sketching rational functions'
+       ]},
+       { code: 'M7', title: 'Advanced Rationals & Absolute Value', topics: [
+         'Rational functions: numerator degree > denominator degree (oblique asymptote)',
+         'Oblique asymptote: finding by polynomial division',
+         'Partial fractions',
+         'Absolute value function: graph, domain, range',
+         'Absolute value equations',
+         'Absolute value inequalities',
+         'Solving absolute value graphically'
+       ]},
+       { code: 'M8', title: 'Transformations & Special Graphs', topics: [
+         'Vertical translation: y = f(x) + a',
+         'Horizontal translation: y = f(x − a)',
+         'Vertical stretch: y = af(x)',
+         'Horizontal stretch: y = f(ax)',
+         'Reflection in x-axis: y = -f(x)',
+         'Reflection in y-axis: y = f(-x)',
+         'Combinations of transformations',
+         'Graph of y = (f(x))²',
+         'Graph of y = 1/f(x)',
+         'Graph of y = f(|x|)'
+       ]},
+       { code: 'M9', title: 'Polynomials & Roots', topics: [
+         'Polynomial long division',
+         'Synthetic division',
+         'Factor theorem',
+         'Polynomial remainder theorem',
+         'Fully factorising a polynomial using synthetic division',
+         'Sum and product of polynomial roots',
+         'Finding equation of cubic from its graph',
+         'Sketching a cubic function'
+       ]},
+       { code: 'M10', title: 'Exponentials, Logs & Systems', topics: [
+         'Laws of exponents (revision)',
+         'Solving exponential equations',
+         'Exponential functions: domain, range, graphs',
+         'Growth and decay models',
+         'Logarithmic functions: domain, range, graphs',
+         'Laws of logarithms',
+         'Solving systems of 3×3 linear equations',
+         'Types of solutions: unique, infinitely many, no solution'
+       ]},
+       { code: 'M11', title: 'Sequences, Series & Financial Math', topics: [
+         'Arithmetic sequences: term formula, common difference',
+         'Arithmetic series: sum formula',
+         'Geometric sequences: term formula, common ratio',
+         'Writing series using sigma notation',
+         'Geometric series: sum formula',
+         'Financial math: compound interest',
+         'Financial math: annuities and loans',
+         'Binomial theorem'
+       ]},
+       { code: 'M12', title: 'Trigonometry', topics: [
+         'Bearings',
+         'Sine rule',
+         'Cosine rule',
+         'Ambiguous case (sine rule)',
+         'Unit circle: angles and coordinates',
+         'Trig functions and their graphs (sin, cos, tan)',
+         'Solving trigonometric equations (general and restricted)',
+         'Compound angle identities',
+         'Modelling using trig functions',
+         'Inverse trig functions'
+       ]},
+       { code: 'M13', title: 'Calculus', topics: [
+         'Power rule for differentiation',
+         'Sum/difference rule',
+         'Product rule',
+         'Quotient rule',
+         'Chain rule',
+         'Derivatives of trig functions',
+         'Finding equations of tangents to curves',
+         'Finding equations of normals to curves',
+         'Basic differential equations'
+       ]}
+     ]
+   },
+   {
+     id: 'physics', name: 'Physics HL',
+     accent: 'var(--subject-physics)',
+     exams: ['P1 Wed 3 Jun', 'P2 Thu 4 Jun'],
+     examDates: ['2026-06-03'],
+     blocks: [
+       { code: 'P1', title: 'Kinematics (Theme A)', topics: [
+         'Displacement, velocity, acceleration definitions',
+         'Constant-acceleration equations (SUVAT)',
+         'Displacement-time graph analysis (gradient = velocity)',
+         'Velocity-time graph analysis (gradient = acceleration, area = displacement)',
+         'Projectile motion: horizontal and vertical components',
+         'Projectile motion: range and maximum height'
+       ]},
+       { code: 'P2', title: 'Forces & Momentum (Theme A)', topics: [
+         'Free-body diagrams',
+         'Weight, normal force, friction, tension',
+         "Newton's first law",
+         "Newton's second law (F = ma)",
+         "Newton's third law",
+         'Impulse and change in momentum (J = Delta p)',
+         'Conservation of momentum (1D)',
+         'Conservation of momentum (2D)',
+         'Elastic vs inelastic collisions'
+       ]},
+       { code: 'P3', title: 'Work, Energy & Power (Theme A)', topics: [
+         'Work done by a constant force',
+         'Work-energy theorem',
+         'Kinetic energy',
+         'Gravitational potential energy',
+         'Conservation of mechanical energy',
+         'Power: average and instantaneous',
+         'Efficiency'
+       ]},
+       { code: 'P4', title: 'Advanced Mechanics (Theme A)', topics: [
+         'Circular motion: centripetal acceleration',
+         'Circular motion: centripetal force',
+         'Applications of circular motion (banked tracks, satellites)',
+         'Special relativity: time dilation (HL)',
+         'Special relativity: length contraction (HL)'
+       ]},
+       { code: 'P5', title: 'Thermal Energy (Theme B)', topics: [
+         'Specific heat capacity: formula and calorimetry problems',
+         'Specific latent heat: fusion and vaporisation',
+         'Phase change diagrams (heating curves)',
+         'Conduction, convection, radiation mechanisms',
+         'Black-body radiation concept'
+       ]},
+       { code: 'P6', title: 'Gases & Thermodynamics (Theme B)', topics: [
+         'Ideal gas law: PV = nRT',
+         "Boyle's law, Charles's law, Gay-Lussac's law",
+         'Kinetic theory: pressure from microscopic model',
+         'Internal energy',
+         "First law of thermodynamics (Delta U = Q - W)",
+         'Isobaric, isochoric, isothermal, adiabatic processes',
+         'P-V diagrams',
+         'Thermal efficiency basics'
+       ]},
+       { code: 'P7', title: 'Gravitational Fields (Theme D)', topics: [
+         'Gravitational field strength g',
+         "Newton's law of gravitation",
+         'Gravitational field lines and equipotential surfaces',
+         'Gravitational potential',
+         'Orbital mechanics: centripetal force = gravitational force',
+         'Geostationary and polar orbits'
+       ]},
+       { code: 'P8', title: 'Electric & Magnetic Fields (Theme D)', topics: [
+         "Coulomb's law",
+         'Electric field strength: E = F/q',
+         'Electric field lines and equipotential surfaces',
+         'Electric potential',
+         'Uniform electric fields',
+         'Magnetic field around a straight wire',
+         'Magnetic field inside a solenoid',
+         'Force on a current-carrying conductor (F = BIL)',
+         'Force on a moving charge (F = qvB)'
+       ]},
+       { code: 'P9', title: 'Motion in EM Fields (Theme D)', topics: [
+         'Circular motion of a charged particle in a magnetic field',
+         'Helical motion',
+         'Velocity selector',
+         'Mass spectrometer principle'
+       ]},
+       { code: 'P10', title: 'Electromagnetic Induction (Theme D)', topics: [
+         'Magnetic flux (Phi = BA cos theta)',
+         "Faraday's law of induction",
+         "Lenz's law",
+         'EMF in a moving conductor (epsilon = BLv)',
+         'Simple AC generator',
+         'Mixed fields + mechanics problems'
+       ]}
+     ]
+   },
+   {
+     id: 'cs', name: 'Computer Science HL',
+     accent: 'var(--subject-cs)',
+     exams: ['P1 Sun 7 Jun', 'P2 Mon 8 Jun'],
+     examDates: ['2026-06-07'],
+     blocks: [
+       { code: 'C1', title: 'Hardware & Operating Systems (A1)', topics: [
+         'CPU components: ALU, CU, registers, cache, clock',
+         'Memory hierarchy: registers, cache, RAM, secondary storage',
+         'Secondary storage types (HDD, SSD, optical)',
+         'Input/output devices',
+         'GPU and parallel processing concepts',
+         'OS functions: process/memory/file/I/O management',
+         'Multitasking and scheduling',
+         'Control systems: sensors and actuators'
+       ]},
+       { code: 'C2', title: 'Data Representation & Logic (A1)', topics: [
+         'Binary number system and conversion',
+         'Hexadecimal and conversion',
+         "Two's complement representation",
+         'Fixed-point and floating-point concepts',
+         'Basic logic gates: AND, OR, NOT, NAND, NOR, XOR',
+         'Truth tables',
+         'Simple Boolean expressions',
+         'Boolean simplification basics'
+       ]},
+       { code: 'C3', title: 'Computational Thinking (B1)', topics: [
+         'Problem specification and requirements',
+         'Decomposition',
+         'Abstraction',
+         'Pattern recognition',
+         'Algorithm design: inputs, outputs, pre/post-conditions',
+         'Trace tables',
+         'Pseudocode conventions'
+       ]},
+       { code: 'C4', title: 'Core Programming (B2)', topics: [
+         'Variables and data types',
+         'Expressions and operators',
+         'Selection: if/else, nested if, case/switch',
+         'Iteration: for loops, while loops, repeat-until',
+         'Procedures and functions',
+         'Parameters: passing by value',
+         'Local vs global variables',
+         'Error types: syntax, logic, runtime'
+       ]},
+       { code: 'C5', title: 'Data Structures (B2)', topics: [
+         'Arrays: declaration, access, traversal',
+         '2D arrays',
+         'Lists vs arrays (static vs dynamic)',
+         'Stacks: push, pop, peek, isEmpty, LIFO principle',
+         'Queues: enqueue, dequeue, peek, isEmpty, FIFO principle',
+         'Use cases for stacks (call stack, undo)',
+         'Use cases for queues (print queue, scheduling)'
+       ]},
+       { code: 'C6', title: 'Algorithms (B2)', topics: [
+         'Linear search: algorithm and trace',
+         'Binary search: algorithm, trace, requirement (sorted)',
+         'Bubble sort: algorithm, trace, comparisons',
+         'Insertion sort: algorithm, trace',
+         'Selection sort: algorithm, trace',
+         'Merge sort: concept and divide/conquer idea',
+         'Big-O: O(1), O(n), O(n²), O(n log n) — which algorithm maps to which'
+       ]},
+       { code: 'C7', title: 'File Handling (B2)', topics: [
+         'Opening files (read, write, append modes)',
+         'Reading lines from a text file',
+         'Writing to a text file',
+         'EOF detection',
+         'Error handling in file I/O',
+         'Combining file I/O with loops and conditionals'
+       ]},
+       { code: 'C8', title: 'OOP & Abstract Data Types (B3.1 + B4.1)', topics: [
+         'Classes and objects',
+         'Attributes and methods',
+         'Constructors',
+         'Encapsulation (private vs public)',
+         'Instantiating objects',
+         'Calling methods on objects',
+         'Conceptual linked lists: nodes, head pointer, traversal',
+         'Conceptual binary trees: nodes, left/right children, root',
+         'Advantages of linked lists over arrays',
+         'Advantages of trees for searching'
+       ]}
+     ]
+   },
+   {
+     id: 'econ', name: 'Economics HL',
+     accent: 'var(--subject-econ)',
+     exams: ['P3 Sun 14 Jun', 'P2 Sun 14 Jun'],
+     examDates: ['2026-06-14'],
+     blocks: [
+       { code: 'E1', title: 'Introduction to Economics (Chapter 1)', topics: [
+         'Scarcity and the economic problem',
+         'Choice and opportunity cost',
+         'Production possibility curve (PPC): shape and shifts',
+         'Economic systems: free market, planned, mixed',
+         'Positive vs normative economics',
+         'Rational choice exercise concepts'
+       ]},
+       { code: 'E2', title: 'Competitive Markets (Chapter 2)', topics: [
+         "Law of demand and demand curve",
+         'Determinants of demand (shifters)',
+         "Law of supply and supply curve",
+         'Determinants of supply (shifters)',
+         'Market equilibrium: price and quantity',
+         'Excess demand and excess supply',
+         'Effects of shifts in demand on equilibrium',
+         'Effects of shifts in supply on equilibrium'
+       ]},
+       { code: 'E3', title: 'Elasticities (Chapter 3)', topics: [
+         'Price elasticity of demand (PED): formula and calculation',
+         'PED determinants',
+         'PED and total revenue relationship',
+         'Price elasticity of supply (PES): formula and calculation',
+         'PES determinants',
+         'Cross elasticity of demand (XED): formula, substitutes vs complements',
+         'Income elasticity of demand (YED): formula, normal vs inferior goods',
+         'Applications of elasticity in policy'
+       ]},
+       { code: 'E4', title: 'Government Intervention (Chapter 4)', topics: [
+         'Price ceilings: diagram, effects, stakeholders',
+         'Price floors: diagram, effects, stakeholders',
